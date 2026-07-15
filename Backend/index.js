@@ -1,19 +1,40 @@
 import express from "express";
 import Dotenv  from "dotenv";
+import dns from "dns"
+import cookieParser from "cookie-parser";
+import cors from "cors"
 Dotenv.config();
 
+dns.setServers(["1.1.1.1" ,"8.8.8.8"]);
 
 import authRoute from "./router/authRoute.js"
+import { connectDB } from "./lib/db.js";
 
-const app = express.Router() ;
-app.use = express()
+const app = express();
+
+
+app.use(cookieParser());
+app.use(express.json());
+
+// app.use(cors({
+//     origin:"",
+//     credentials:true,
+// }))
+
+const PORT = process.env.PORT;
+
+
+
 
 app.use("/api/auth", authRoute);
+
+
 
 app.get("/",(req,res)=>{
     console.log("hello world");
 })
 
 app.listen(3001, (req,res)=>{
-    console.log("server is running on port 3001")
+    console.log("server is running on port 3001");
+    connectDB();
 });
