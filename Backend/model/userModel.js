@@ -60,5 +60,5 @@ userSchema.method.matchPassword = async function (enterPassword) {
     return isPassCorrect;
 }
 
-const userModel = new mongoose.model("User",userSchema);
-export default userModel ;
+const User = new mongoose.model("User",userSchema);
+export default User ;
