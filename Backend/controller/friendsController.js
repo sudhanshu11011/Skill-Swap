@@ -1,23 +1,22 @@
-import express from "express";
-import User from "../model/userModel";
-import friendRequest from "../model/friendModel.js";
+import User from "../model/userModel.js";
 import friendRequest from "../model/friendModel.js";
 
-export const getRecommendedUser = (req,res)=>{
+
+export const getRecommendedUser = async (req,res)=>{
     try {
-        const currUserId = req.user.Id;
-        const currId = req.user;
+        const currUserId = req.user._id;
+        const currUser = req.user;
 
         const recommendedUser = await User.find({
             $and:[
                 {_id:{$ne: currUserId}},
-                {_id:{$nin: currId.friends}},
-                {isOnboarding: true},
+                {_id:{$nin: currUser.friends}},
+                {isOnboarded: true},
             ],
         }).select("-password");
 
 
-        res.status(201).json(recommendedUser);    
+        res.status(200).json(recommendedUser);    
 
     } catch (error) {
         console.error("error in get recommended user", error);
@@ -25,20 +24,20 @@ export const getRecommendedUser = (req,res)=>{
     }
 }
 
-export const getMyFriends = (req,res)=>{
+export const getMyFriends = async (req,res)=>{
     try {
-        const user = await User.findById(req.user.is).select("friends").populate("firends", "fullName profilPic skillYouWant SkillYouWant language ");
+        const user = await User.findById(req.user.id).select("friends").populate("friends", "fullName profilePic skillYouWant skillYouWant language ");
 
         res.status(200).json(user.friends)
     } catch (error) {
-        console.error("error in get recommended user", error);
+        console.error("error in get my friend user", error);
         return res.status(500).json({message:"internal server error"})
     }
 }
 
-export const getFriendsRequest = (req,res)=>{
+export const getFriendsRequest = async(req,res)=>{
     try {
-        const incommingRequest = await friendRequest.find({
+        const incomingRequest = await friendRequest.find({
             recipient: req.user.id,
             status:"pending"
         }).populate("sender", "fullName profilePic skillYouHave skillYouWant");
@@ -49,7 +48,7 @@ export const getFriendsRequest = (req,res)=>{
         }).populate("recipient", "fullName profilePic");
         
         res.status(200).json({
-            incommingRequests: incommingRequest,
+            incomingRequests: incomingRequest,
             acceptedRequests: acceptedRequest,
         })
 
@@ -59,7 +58,7 @@ export const getFriendsRequest = (req,res)=>{
     }
 }
 
-export const getOutgoingFriendsRequest = (req,res)=>{
+export const getOutgoingFriendsRequest = async (req,res)=>{
     try {
         const outgoingRequest = await friendRequest.find({
             sender: req.user.id,
@@ -68,12 +67,12 @@ export const getOutgoingFriendsRequest = (req,res)=>{
 
         res.status(200).json(outgoingRequest);
     } catch (error) {
-        console.error("error in get recommended user", error);
+        console.error("error in get outgoing friend request", error);
         return res.status(500).json({message:"internal server error"})
     }
 }
 
-export const sendFriendsRequest = (req,res)=>{
+export const sendFriendsRequest = async (req,res)=>{
     try {
         const myId = req.user.id;
         const {id:recipientId} = req.params ;
@@ -86,7 +85,7 @@ export const sendFriendsRequest = (req,res)=>{
         if(!recipient){
             return res.status(400).json({message:"Friends Not exists"})
         };
-        if(recipient.friends.include(myId)){
+        if(recipient.friends.includes(myId)){
             return res.status(400).json({message:"You were already Friends Of This Users"})
         };
 
@@ -109,38 +108,38 @@ export const sendFriendsRequest = (req,res)=>{
         res.status(200).json(friendrequest);
 
     } catch (error) {
-        console.error("error in get recommended user", error);
+        console.error("error in send friend request", error);
         return res.status(500).json({message:"internal server error"})
     }
 }
 
-export const acceptFriendsRequest = (req,res)=>{
+export const acceptFriendsRequest = async (req,res)=>{
     try {
         const {id:requestId} = req.params;
 
         const friendrequest = await friendRequest.findById(requestId);
-        if (!friendRequest) {
+        if (!friendrequest) {
             return res.status(404).json({ message: "friend request not found" })
         }
-        if (friendRequest.recipient.toString() !== req.user.id) {
+        if (friendrequest.recipient.toString() !== req.user.id) {
             return res.status(403).json({ message: "Yoou are not authorized to accept this request" })
         }
 
         friendrequest.status = "accepted";
         await friendrequest.save();
         
-        await User.findByIdAndUpdate(friendRequest.sender, {
-            $addToSet: { friends: friendRequest.recipient },
+        await User.findByIdAndUpdate(friendrequest.sender, {
+            $addToSet: { friends: friendrequest.recipient },
         })
-        await User.findByIdAndUpdate(friendRequest.recipient, {
-            $addToSet: { friends: friendRequest.sender },
+        await User.findByIdAndUpdate(friendrequest.recipient, {
+            $addToSet: { friends: friendrequest.sender },
         });
 
         res.status(200).json({ message: "friend request accecpted" });
 
 
     } catch (error) {
-        console.error("error in get recommended user", error);
+        console.error("error in accept friend request", error);
         return res.status(500).json({message:"internal server error"})
     }
 }
