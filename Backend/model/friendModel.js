@@ -17,8 +17,8 @@ const friendSchema = new mongoose.Schema({
         enum: ["pending","accepted"],
         default:"pending",
     },
-})
+},{timestamps:true})
 
-const friend = new mongoose.model("friend", friendSchema);
+const friendRequest = new mongoose.model("friend", friendSchema);
 
-export default friend ;
+export default friendRequest ;
