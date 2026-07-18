@@ -7,10 +7,12 @@ Dotenv.config();
 
 dns.setServers(["1.1.1.1" ,"8.8.8.8"]);
 
-import authRoute from "./router/authRoute.js"
+import authRoute from "./router/authRoute.js";
+import userRoute from "./router/userRoute.js";
 import { connectDB } from "./lib/db.js";
 
 const app = express();
+const PORT = process.env.PORT ||3001 ;
 
 
 app.use(cookieParser());
@@ -22,12 +24,8 @@ app.use(express.json());
 // }))
 
 
-const PORT = process.env.PORT;
-
-
-
-
 app.use("/api/auth", authRoute);
+app.use("/api/users", userRoute)
 
 
 
