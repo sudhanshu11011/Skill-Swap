@@ -1,11 +1,10 @@
-import express from "express";
 import User from "../model/userModel.js";
 import jwt from "jsonwebtoken";
 import { upsertStream } from "../lib/stream.js";
 
 export const login = async (req, res) => {
     try {
-        const { email, password } = req.body();
+        const { email, password } = req.body;
         if (!email || !password) {
             return res.status(400).json({ message: "All field Required" })
         }
@@ -15,7 +14,7 @@ export const login = async (req, res) => {
             return res.status(401).json({ message: "Account Not Found" });
         }
 
-        const isPassCorrect = await User.matchPassword(password);
+        const isPassCorrect = await user.matchPassword(password);
         if (!isPassCorrect) {
             return res.status(401).json({ message: "Invalid EmailId and Password" });
         }
@@ -24,7 +23,7 @@ export const login = async (req, res) => {
             expiresIn: "7d",
         })
 
-        req.cookie("jwt", token, {
+        res.cookie("jwt", token, {
             maxAge: 7 * 24 * 60 * 60 * 1000,
             httpOnly: true,
             sameSite: "strict",
@@ -47,13 +46,13 @@ export const singup = async (req, res) => {
             return res.status(400).json({ message: "All Field Required" })
         };
 
-        if (password < 6) {
+        if (password.length < 6) {
             return res.status(400).json({ message: "Password Must Be Atleast 6 Character Long" })
         };
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.text(email)) {
-            return req.status(400).json({ message: "Invalid Email Id" })
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ message: "Invalid Email Id" })
         };
 
         const existUser = await User.findOne({ email });
@@ -71,7 +70,7 @@ export const singup = async (req, res) => {
 
             await upsertStream({
                 id: newUser._id.toString(),
-                name: newUser._fullName
+                name: newUser.fullName
             });
 
         } catch (error) {
@@ -83,19 +82,22 @@ export const singup = async (req, res) => {
             expiresIn: "7d",
         })
 
-        req.cookie("jwt", token, {
+        res.cookie("jwt", token, {
             maxAge: 7 * 24 * 60 * 60 * 1000,
             httpOnly: true,
             sameSite: "strict",
             secure: process.env.NODE_ENV === "production"
         })
 
-        res.status(201).json({ message: true });
+        res.status(201).json({
+            success: true,
+            user: newUser
+        });
 
     } catch (error) {
-
-    }
-};
+        console.error("error in signup logic", error)
+        return res.status(500).json({message:"internal server error"})
+    }};
 
 export const logout = async (req, res) => {
     try {
@@ -122,7 +124,7 @@ export const onBoarding = async (req, res) => {
 
         const updateUser = await User.findByIdAndUpdate(userId, {
             ...req.body,
-            isOnboarding: true,
+            isOnboarded: true,
         }, { new: true })
         if (!updateUser) {
             return res.status(404).json({ message: "User not found" });

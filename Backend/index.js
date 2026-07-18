@@ -31,12 +31,7 @@ app.use("/api/users", userRoute)
 app.use("/api/chat", chatRoute)
 
 
-
-app.get("/",(req,res)=>{
-    console.log("hello world");
-})
-
-app.listen(3001, (req,res)=>{
-    console.log("server is running on port 3001");
+app.listen( PORT, (req,res)=>{
+    console.log(`server is running on port ${PORT}`);
     connectDB();
 });

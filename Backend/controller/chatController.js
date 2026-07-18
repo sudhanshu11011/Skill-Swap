@@ -1,9 +1,9 @@
-import generateToken from "../lib/stream.js"
+import { generateToken } from "../lib/stream.js";
 
 
-export const getStreamToken = async () => {
+export const getStreamToken = async (req,res) => {
     try {
-        const token = generateToken(requestAnimationFrame.user.id);
+        const token = generateToken(req.user.id);
         res.status(200).json({token});
 
     } catch (error) {
