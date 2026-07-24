@@ -35,5 +35,5 @@ The frontend is built with React, providing a modern, responsive, and intuitive 
 * Middleware-based Route Protection
 * Modular MVC Architecture
 * Friend Request & Matching System
-* User Profile Onboarding
+* User profile Onboarding
 * Secure Environment Variable Configuration
