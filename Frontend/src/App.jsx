@@ -1,9 +1,6 @@
-import React from 'react'
-
-const App = () => {
-  return (
-    <div>App</div>
-  )
-}
-
-export default App
+import React from 'react';
+import LandingPage from "../pages/LandingPage.jsx";
+const App=()=>{
+  return <LandingPage/>;
+};
+export default App;
