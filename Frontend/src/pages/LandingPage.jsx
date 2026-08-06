@@ -2,7 +2,9 @@ import React from "react";
 import logo from "../src/assets/images/logo.png";
 import heroImage from "../src/assets/images/hero-image.png";
 import { ArrowRight, BookOpen, GraduationCap, Moon, Play, Sparkles, Star } from "lucide-react";
+
 const LandingPage = () => {
+  
   return (
     <main className="min-h-screen bg-white text-slate-900">
       <header className="border-b border-slate-200 bg-white">
