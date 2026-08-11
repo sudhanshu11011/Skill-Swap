@@ -1,12 +1,254 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
 html {
-    scroll-behavior:smooth;
+  scroll-behavior: smooth;
 }
-body{
-    margin:0;
-    min-width:320px;
-    min-height:100vh;
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
 }
-*{
-    box-sizing: border-box;
+* {
+  box-sizing: border-box;
+}
+/* ==================== SCROLL REVEAL ANIMATIONS ==================== */
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(40px);
+  transition:
+    opacity 700ms ease,
+    transform 700ms ease;
+}
+
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==================== REDUCED MOTION ==================== */
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+/* ==================== STAGGERED REVEAL ANIMATIONS ==================== */
+
+[data-stagger] {
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity 600ms ease,
+    transform 600ms ease;
+}
+
+[data-stagger].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+[data-stagger="1"].is-visible {
+  transition-delay: 0ms;
+}
+
+[data-stagger="2"].is-visible {
+  transition-delay: 100ms;
+}
+
+[data-stagger="3"].is-visible {
+  transition-delay: 200ms;
+}
+
+[data-stagger="4"].is-visible {
+  transition-delay: 300ms;
+}
+
+[data-stagger="5"].is-visible {
+  transition-delay: 400ms;
+}
+
+[data-stagger="6"].is-visible {
+  transition-delay: 500ms;
+}
+
+/* ==================== DIRECTIONAL REVEAL ANIMATIONS ==================== */
+
+[data-reveal-left] {
+  opacity: 0;
+  transform: translateX(-45px);
+  transition:
+    opacity 700ms ease,
+    transform 700ms ease;
+}
+
+[data-reveal-left].is-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+[data-reveal-right] {
+  opacity: 0;
+  transform: translateX(45px);
+  transition:
+    opacity 700ms ease,
+    transform 700ms ease;
+}
+
+[data-reveal-right].is-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ==================== FLOATING EFFECT ==================== */
+
+[data-float] {
+  animation: skillswap-float 4s ease-in-out infinite;
+}
+
+@keyframes skillswap-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* ==================== CHAT MESSAGE ANIMATIONS ==================== */
+
+[data-chat-message] {
+  opacity: 0;
+  transform: translateY(15px);
+  transition:
+    opacity 500ms ease,
+    transform 500ms ease;
+}
+
+[data-chat-message].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==================== CHAT PREVIEW FLOAT ==================== */
+
+[data-chat-window] {
+  animation: chat-window-float 5s ease-in-out infinite;
+}
+
+@keyframes chat-window-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* ==================== CTA ANIMATIONS ==================== */
+
+[data-cta-content] {
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity 700ms ease,
+    transform 700ms ease;
+}
+
+[data-cta-content].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+[data-cta-buttons] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 600ms ease,
+    transform 600ms ease;
+  transition-delay: 150ms;
+}
+
+[data-cta-buttons].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+[data-cta-visual] {
+  animation: cta-visual-float 5s ease-in-out infinite;
+}
+
+@keyframes cta-visual-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+}
+
+
+/* ==================== REDUCED MOTION ==================== */
+
+@media (prefers-reduced-motion: reduce) {
+  [data-cta-content],
+  [data-cta-buttons] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  [data-cta-visual] {
+    animation: none;
+  }
+}
+
+/* ==================== REDUCED MOTION ==================== */
+
+@media (prefers-reduced-motion: reduce) {
+  [data-chat-message] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  [data-chat-window] {
+    animation: none;
+  }
+}
+
+/* ==================== REDUCED MOTION ==================== */
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal-left],
+  [data-reveal-right] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  [data-float] {
+    animation: none;
+  }
+}
+
+/* ==================== REDUCED MOTION ==================== */
+
+@media (prefers-reduced-motion: reduce) {
+  [data-stagger] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
