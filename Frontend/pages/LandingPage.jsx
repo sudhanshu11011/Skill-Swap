@@ -1,5 +1,5 @@
 import { useTheme } from "../src/context/ThemeContext";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import logo from "../src/assets/images/logo.png";
 import heroImage from "../src/assets/images/hero-image.png";
 import { observeScrollReveal } from "../src/utils/scrollReveal";
@@ -45,7 +45,7 @@ const LandingPage = () => {
   const { theme, toggleTheme } = useTheme();
   return (
     <main className="min-h-screen bg-white text-slate-900 transition-colors duration-500 dark:bg-slate-950 dark:text-slate-100">
-      {/* ==================== NAVBAR ==================== */}
+      {/* NAVBAR */}
       <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/95 backdrop-blur-md transition-colors duration-300 dark:border-slate-800 dark:bg-slate-950/95">
         <nav className="mx-auto flex w-full max-w-[1600px] items-center justify-between px-4 py-3 sm:px-6 sm:py-4 lg:px-8 xl:px-12 2xl:px-16">
           {/* Logo */}
@@ -145,7 +145,7 @@ const LandingPage = () => {
               href="#get-started"
               className="rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-violet-700 hover:shadow-md"
             >
-              Get Started
+              Login / Sign Up
             </a>
           </div>
 
@@ -279,7 +279,7 @@ const LandingPage = () => {
           </div>
         )}
       </header>
-      {/* ==================== HERO SECTION ==================== */}
+      {/* HERO SECTION */}
       <section
         id="home"
         className="relative min-h-[calc(100vh-73px)] w-full overflow-hidden bg-white transition-colors duration-500 dark:bg-slate-950"
@@ -444,7 +444,7 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
-      {/* ==================== ABOUT ==================== */}
+      {/* ABOUT */}
       <section
         id="about"
         className="w-full bg-white px-6 py-20 transition-colors duration-500 sm:px-8 md:px-10 lg:px-12 xl:px-16 2xl:px-20 dark:bg-slate-950"
@@ -581,7 +581,7 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
-      {/* ==================== FEATURES ==================== */}
+      {/* FEATURES */}
       <section
         id="features"
         className="w-full bg-white px-6 py-20 transition-colors duration-500 sm:px-8 md:px-10 lg:px-12 xl:px-16 2xl:px-20 dark:bg-slate-950"
@@ -699,7 +699,7 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
-      {/* ==================== HOW SKILLSWAP WORKS ==================== */}
+      {/* HOW SKILLSWAP WORKS */}
       <section
         id="how-it-works"
         className="w-full bg-slate-50 px-6 py-20 transition-colors duration-500 sm:px-8 md:px-10 lg:px-12 xl:px-16 2xl:px-20 dark:bg-slate-950"
@@ -827,13 +827,13 @@ const LandingPage = () => {
               href="#get-started"
               className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-200 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl dark:shadow-violet-950/40"
             >
-              Get Started
+              Login / Sign Up
               <ArrowRight size={18} />
             </a>
           </div>
         </div>
       </section>
-      {/* ==================== EXPLORE SKILLS ==================== */}
+      {/* EXPLORE SKILLS */}
       <section
         id="skills"
         className="w-full bg-white px-6 py-20 transition-colors duration-500 sm:px-8 md:px-10 lg:px-12 xl:px-16 2xl:px-20 dark:bg-slate-950"
@@ -981,7 +981,7 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
-      {/* ==================== COMMUNITY / MATCHING ==================== */}
+      {/* COMMUNITY / MATCHING */}
       <section
         id="community"
         className="w-full bg-white px-6 py-20 transition-colors duration-500 sm:px-8 md:px-10 lg:px-12 xl:px-16 2xl:px-20 dark:bg-slate-950"
@@ -1214,7 +1214,7 @@ const LandingPage = () => {
                   type="button"
                   className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-200 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl dark:shadow-violet-950/40"
                 >
-                  Connect with Alex
+                  Connect Now
                   <ArrowRight size={18} />
                 </button>
               </div>
@@ -1248,7 +1248,7 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
-      {/* ==================== CONNECT / CHAT ==================== */}
+      {/* CONNECT / CHAT */}
       <section
         id="connect"
         className="w-full bg-slate-50 px-6 py-20 transition-colors duration-500 sm:px-8 md:px-10 lg:px-12 xl:px-16 2xl:px-20 dark:bg-slate-950"
@@ -1514,7 +1514,7 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
-      {/* ==================== FAQ ==================== */}
+      {/* FAQ */}
       <section
         id="faq"
         className="w-full bg-white px-6 py-20 transition-colors duration-500 sm:px-8 md:px-10 lg:px-12 xl:px-16 2xl:px-20 dark:bg-slate-950"
