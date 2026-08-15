@@ -1,9 +1,9 @@
-import { useTheme } from "../src/context/ThemeContext";
 import { useEffect, useState } from "react";
 import logo from "../src/assets/images/logo.png";
 import heroImage from "../src/assets/images/hero-image.png";
 import { observeScrollReveal } from "../src/utils/scrollReveal";
-
+import { Link } from "react-router-dom";
+import Navbar from "../src/components/Navbar";
 import {
   ArrowRight,
   BookOpen,
@@ -16,10 +16,7 @@ import {
   GraduationCap,
   HeartHandshake,
   Languages,
-  Menu,
   MessageCircle,
-  Moon,
-  Sun,
   Music,
   Palette,
   Play,
@@ -32,253 +29,16 @@ import {
   Trophy,
   UserRound,
   Users,
-  X,
-  Globe2,
 } from "lucide-react";
 
 const LandingPage = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
   useEffect(() => {
     observeScrollReveal();
   }, []);
-  const { theme, toggleTheme } = useTheme();
   return (
     <main className="min-h-screen bg-white text-slate-900 transition-colors duration-500 dark:bg-slate-950 dark:text-slate-100">
-      {/* NAVBAR */}
-      <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/95 backdrop-blur-md transition-colors duration-300 dark:border-slate-800 dark:bg-slate-950/95">
-        <nav className="mx-auto flex w-full max-w-[1600px] items-center justify-between px-4 py-3 sm:px-6 sm:py-4 lg:px-8 xl:px-12 2xl:px-16">
-          {/* Logo */}
-          <a
-            href="#home"
-            className="flex shrink-0 items-center gap-2"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            <img
-              src={logo}
-              alt="SkillSwap Logo"
-              className="h-9 w-9 object-contain sm:h-10 sm:w-10"
-            />
-
-            <span className="text-lg font-bold tracking-tight text-slate-950 transition-colors duration-300 sm:text-xl dark:text-white">
-              SkillSwap
-            </span>
-          </a>
-
-          {/* ==================== DESKTOP NAVIGATION ==================== */}
-
-          <div className="hidden items-center gap-6 lg:flex xl:gap-8">
-            <a
-              href="#home"
-              className="text-sm font-medium text-violet-600 transition-colors hover:text-violet-700 dark:text-violet-400 dark:hover:text-violet-300"
-            >
-              Home
-            </a>
-            <a
-              href="#about"
-              className="text-sm font-medium text-slate-700 transition-colors hover:text-violet-600 dark:text-slate-300 dark:hover:text-violet-400"
-            >
-              About
-            </a>
-            <a
-              href="#features"
-              className="text-sm font-medium text-slate-700 transition-colors hover:text-violet-600 dark:text-slate-300 dark:hover:text-violet-400"
-            >
-              Features
-            </a>
-            <a
-              href="#how-it-works"
-              className="text-sm font-medium text-slate-700 transition-colors hover:text-violet-600 dark:text-slate-300 dark:hover:text-violet-400"
-            >
-              How It Works
-            </a>
-            <a
-              href="#faq"
-              className="text-sm font-medium text-slate-700 transition-colors hover:text-violet-600 dark:text-slate-300 dark:hover:text-violet-400"
-            >
-              FAQ
-            </a>
-          </div>
-
-          {/* ==================== DESKTOP CONTROLS ==================== */}
-
-          <div className="hidden items-center gap-3 lg:flex">
-            {/* Language */}
-            <button
-              type="button"
-              className="rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
-            >
-              <Globe2 size={22} />
-            </button>
-
-            {/* Theme Toggle */}
-            <button
-              type="button"
-              onClick={toggleTheme}
-              aria-label={
-                theme === "light"
-                  ? "Switch to dark theme"
-                  : "Switch to light theme"
-              }
-              title={
-                theme === "light"
-                  ? "Switch to dark theme"
-                  : "Switch to light theme"
-              }
-              className="group flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 transition-all duration-300 hover:bg-slate-100 hover:text-violet-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-violet-400"
-            >
-              {theme === "light" ? (
-                <Moon
-                  size={18}
-                  className="transition-transform duration-500 group-hover:rotate-12"
-                />
-              ) : (
-                <Sun
-                  size={18}
-                  className="transition-transform duration-500 group-hover:rotate-90"
-                />
-              )}
-            </button>
-
-            {/* Get Started */}
-            <a
-              href="#get-started"
-              className="rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-violet-700 hover:shadow-md"
-            >
-              Login / Sign Up
-            </a>
-          </div>
-
-          {/* ==================== MOBILE / TABLET CONTROLS ==================== */}
-
-          <div className="flex items-center gap-2 lg:hidden">
-            {/* Mobile Get Started */}
-            <a
-              href="#get-started"
-              onClick={() => setIsMenuOpen(false)}
-              className="hidden rounded-lg bg-violet-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-violet-700 sm:inline-flex"
-            >
-              Get Started
-            </a>
-
-            {/* Hamburger / Close Button */}
-            <button
-              type="button"
-              aria-label={
-                isMenuOpen ? "Close navigation menu" : "Open navigation menu"
-              }
-              aria-expanded={isMenuOpen}
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 text-slate-700 transition-all duration-300 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
-            >
-              {isMenuOpen ? <X size={22} /> : <Menu size={22} />}
-            </button>
-          </div>
-        </nav>
-
-        {/* ==================== MOBILE / TABLET MENU ==================== */}
-
-        {isMenuOpen && (
-          <div className="border-t border-slate-200 bg-white transition-colors duration-300 lg:hidden dark:border-slate-800 dark:bg-slate-950">
-            <div className="mx-auto max-w-[1600px] px-4 py-4 sm:px-6">
-              {/* Navigation Links */}
-
-              <div className="flex flex-col">
-                <a
-                  href="#home"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="rounded-lg px-4 py-3 text-sm font-medium text-violet-600 transition-colors hover:bg-violet-50 dark:text-violet-400 dark:hover:bg-violet-950/40"
-                >
-                  Home
-                </a>
-
-                <a
-                  href="#about"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="rounded-lg px-4 py-3 text-sm font-medium text-slate-700 transition-colors hover:bg-violet-50 hover:text-violet-600 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-violet-400"
-                >
-                  About
-                </a>
-
-                <a
-                  href="#features"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="rounded-lg px-4 py-3 text-sm font-medium text-slate-700 transition-colors hover:bg-violet-50 hover:text-violet-600 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-violet-400"
-                >
-                  Features
-                </a>
-
-                <a
-                  href="#how-it-works"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="rounded-lg px-4 py-3 text-sm font-medium text-slate-700 transition-colors hover:bg-violet-50 hover:text-violet-600 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-violet-400"
-                >
-                  How It Works
-                </a>
-
-                <a
-                  href="#faq"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="rounded-lg px-4 py-3 text-sm font-medium text-slate-700 transition-colors hover:bg-violet-50 hover:text-violet-600 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-violet-400"
-                >
-                  FAQ
-                </a>
-              </div>
-
-              {/* Mobile Controls */}
-
-              <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-4 dark:border-slate-800">
-                {/* Language */}
-                <button
-                  type="button"
-                  className="rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
-                >
-                  <Globe2 size={22} />
-                </button>
-
-                {/* Mobile Theme Toggle */}
-                <button
-                  type="button"
-                  onClick={toggleTheme}
-                  aria-label={
-                    theme === "light"
-                      ? "Switch to dark theme"
-                      : "Switch to light theme"
-                  }
-                  title={
-                    theme === "light"
-                      ? "Switch to dark theme"
-                      : "Switch to light theme"
-                  }
-                  className="group flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 transition-all duration-300 hover:bg-slate-100 hover:text-violet-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-violet-400"
-                >
-                  {theme === "light" ? (
-                    <Moon
-                      size={18}
-                      className="transition-transform duration-500 group-hover:rotate-12"
-                    />
-                  ) : (
-                    <Sun
-                      size={18}
-                      className="transition-transform duration-500 group-hover:rotate-90"
-                    />
-                  )}
-                </button>
-              </div>
-
-              {/* Mobile CTA */}
-
-              <a
-                href="#get-started"
-                onClick={() => setIsMenuOpen(false)}
-                className="mt-4 flex w-full items-center justify-center rounded-xl bg-violet-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-violet-700 hover:shadow-md"
-              >
-                Get Started
-              </a>
-            </div>
-          </div>
-        )}
-      </header>
+      <Navbar />
       {/* HERO SECTION */}
       <section
         id="home"
@@ -315,13 +75,13 @@ const LandingPage = () => {
               className="mt-8 flex flex-wrap items-center gap-4"
             >
               {/* Primary CTA */}
-              <a
-                href="#features"
+              <Link
+                to="/login"
                 className="inline-flex items-center gap-3 rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-200 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl dark:shadow-violet-950/40"
               >
                 Get Started for Free
                 <ArrowRight size={18} />
-              </a>
+              </Link>
 
               {/* Secondary CTA */}
               <button
@@ -823,13 +583,13 @@ const LandingPage = () => {
               </div>
             </div>
 
-            <a
-              href="#get-started"
+            <Link
+              to="/login"
               className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-200 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl dark:shadow-violet-950/40"
             >
               Login / Sign Up
               <ArrowRight size={18} />
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -1648,13 +1408,13 @@ const LandingPage = () => {
               help you learn something new.
             </p>
 
-            <a
-              href="#get-started"
+            <Link
+              to="/login"
               className="mt-6 inline-flex items-center gap-3 rounded-xl bg-white px-6 py-3.5 text-sm font-semibold text-violet-700 shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl"
             >
               Get Started for Free
               <ArrowRight size={18} />
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -1797,12 +1557,12 @@ const LandingPage = () => {
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="#get-started"
+                  <Link
+                    to="/login"
                     className="text-sm text-slate-600 transition-colors duration-300 hover:text-violet-600 dark:text-slate-400 dark:hover:text-violet-400"
                   >
                     Join SkillSwap
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -1832,12 +1592,12 @@ const LandingPage = () => {
                 </li>
 
                 <li>
-                  <a
-                    href="#get-started"
+                  <Link
+                    to="/login"
                     className="text-sm text-slate-600 transition-colors duration-300 hover:text-violet-600 dark:text-slate-400 dark:hover:text-violet-400"
                   >
                     Get Started
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
