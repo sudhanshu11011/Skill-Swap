@@ -1,4 +1,3 @@
-import { useLanguage } from "../context/LanguageContext";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Globe2, Menu, Moon, Sun, X } from "lucide-react";
@@ -10,7 +9,6 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const { theme, toggleTheme } = useTheme();
-  const { language, toggleLanguage } = useLanguage();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/95 backdrop-blur-md transition-colors duration-300 dark:border-slate-800 dark:bg-slate-950/95">
@@ -79,14 +77,12 @@ const Navbar = () => {
 
           <button
             type="button"
-            onClick={toggleLanguage}
-            aria-label="Change language"
-            title={language === "EN" ? "Switch to Hindi" : "Switch to English"}
-            className="flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-slate-700 transition-all duration-300 hover:bg-slate-100 hover:text-violet-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-violet-400"
+            onClick={() => {}}
+            aria-label="Language"
+            title="Language"
+            className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 transition-all duration-300 hover:bg-slate-100 hover:text-violet-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-violet-400"
           >
             <Globe2 size={18} />
-
-            <span className="text-xs font-semibold">{language}</span>
           </button>
 
           {/* Theme */}
@@ -213,15 +209,12 @@ const Navbar = () => {
               {/* Language */}
               <button
                 type="button"
-                onClick={toggleLanguage}
-                aria-label="Change language"
-                title={
-                  language === "EN" ? "Switch to Hindi" : "Switch to English"
-                }
-                className="flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-slate-700 transition-all duration-300 hover:bg-slate-100 hover:text-violet-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-violet-400"
+                onClick={() => {}}
+                aria-label="Language"
+                title="Language"
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 transition-all duration-300 hover:bg-slate-100 hover:text-violet-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-violet-400"
               >
                 <Globe2 size={18} />
-                <span className="text-xs font-semibold">{language}</span>
               </button>
 
               {/* Theme */}
