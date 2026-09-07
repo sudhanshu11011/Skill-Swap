@@ -28,7 +28,7 @@ import {
   Star,
   Trophy,
   UserRound,
-  Users,
+  Users
 } from "lucide-react";
 
 const LandingPage = () => {
@@ -45,7 +45,7 @@ const LandingPage = () => {
         className="relative min-h-[calc(100vh-73px)] w-full overflow-hidden bg-white transition-colors duration-500 dark:bg-slate-950"
       >
         <div className="grid min-h-[calc(100vh-73px)] w-full items-center gap-10 px-6 py-12 sm:px-8 sm:py-14 md:px-10 lg:grid-cols-2 lg:gap-8 lg:px-12 lg:py-16 xl:px-16 2xl:px-20">
-          {/* ==================== LEFT CONTENT ==================== */}
+          {/*LEFT CONTENT*/}
 
           <div className="relative z-10">
             {/* Small Badge */}
@@ -123,7 +123,7 @@ const LandingPage = () => {
             </div>
           </div>
 
-          {/* ==================== RIGHT HERO VISUAL ==================== */}
+          {/* RIGHT HERO VISUAL */}
 
           <div className="relative flex items-center justify-center">
             {/* Background Glow */}
@@ -160,7 +160,7 @@ const LandingPage = () => {
               </div>
             </div>
 
-            {/* ==================== LEARN CARD ==================== */}
+            {/* LEARN CARD */}
 
             <div className="absolute right-0 top-24 z-20 hidden rounded-2xl border border-slate-100 bg-white/95 px-5 py-4 shadow-xl backdrop-blur-sm transition-all duration-500 dark:border-slate-700 dark:bg-slate-900/95 dark:shadow-black/40 xl:block">
               <div className="flex items-center gap-3">
@@ -622,7 +622,7 @@ const LandingPage = () => {
             </p>
           </div>
 
-          {/* ==================== SKILL CATEGORIES ==================== */}
+          {/* SKILL CATEGORIES */}
 
           <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {[
