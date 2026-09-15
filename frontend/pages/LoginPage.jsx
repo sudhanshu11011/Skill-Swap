@@ -1,10 +1,40 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { getCurrentUser, loginUser } from "../services/authService";
 
 export default function LoginPage({ dark = false }) {
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const text = dark ? "#f4f2ff" : "#172033";
   const muted = dark ? "#b8b4cc" : "#687187";
   const card = dark ? "#1b1930" : "#ffffff";
   const border = dark ? "#37334f" : "#e5e7eb";
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      await loginUser({ email, password });
+
+      try {
+        const result = await getCurrentUser();
+        navigate(result.user?.isOnboarded ? "/" : "/onboarding");
+      } catch {
+        navigate("/");
+      }
+    } catch (err) {
+      setError(err.message || "Unable to log in. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <main
@@ -33,18 +63,16 @@ export default function LoginPage({ dark = false }) {
           Login to your SkillSwap account.
         </p>
 
-        <form
-          onSubmit={(event) => {
-            event.preventDefault();
-          }}
-          style={{ display: "grid", gap: 16 }}
-        >
+        <form onSubmit={handleSubmit} style={{ display: "grid", gap: 16 }}>
           <label style={{ display: "grid", gap: 8 }}>
             Email
             <input
               type="email"
               placeholder="you@example.com"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
               required
+              autoComplete="email"
               style={{
                 width: "100%",
                 padding: 12,
@@ -62,7 +90,10 @@ export default function LoginPage({ dark = false }) {
             <input
               type="password"
               placeholder="Enter your password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
               required
+              autoComplete="current-password"
               style={{
                 width: "100%",
                 padding: 12,
@@ -75,8 +106,15 @@ export default function LoginPage({ dark = false }) {
             />
           </label>
 
+          {error && (
+            <p role="alert" style={{ margin: 0, color: "#ef4444" }}>
+              {error}
+            </p>
+          )}
+
           <button
             type="submit"
+            disabled={loading}
             style={{
               padding: 13,
               border: 0,
@@ -84,10 +122,11 @@ export default function LoginPage({ dark = false }) {
               background: "#642de0",
               color: "#fff",
               fontWeight: 700,
-              cursor: "pointer",
+              cursor: loading ? "not-allowed" : "pointer",
+              opacity: loading ? 0.7 : 1,
             }}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 
