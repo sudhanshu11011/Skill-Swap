@@ -10,9 +10,8 @@ export function loginUser(credentials) {
   return loginApi(credentials);
 }
 
-export function signupUser(userData) {
-  return signupApi(userData);
-}
+export function signupUser({ fullName, email, password }) {
+  return authRequest("/signup " );
 
 export function completeOnboarding(profileData) {
   return completeOnboardingApi(profileData);
