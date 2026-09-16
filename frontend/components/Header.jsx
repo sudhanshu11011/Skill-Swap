@@ -10,6 +10,7 @@ const navLinks = [
 ];
 
 export default function Header({ dark, onToggleTheme }) {
+  
   const [languageOpen, setLanguageOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [language, setLanguage] = useState("English");

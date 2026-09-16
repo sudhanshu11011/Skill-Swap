@@ -27,10 +27,7 @@ export function loginUser({ email, password }) {
 }
 
 export function signupUser({ fullName, email, password }) {
-  return authRequest("/signup", {
-    method: "POST",
-    body: JSON.stringify({ fullName, email, password }),
-  });
+  return authRequest("/signup " );
 }
 
 export function completeOnboarding({
