@@ -1,58 +1,26 @@
-const API_BASE_URL = "/api/auth";
+import {
+  loginApi,
+  signupApi,
+  completeOnboardingApi,
+  getCurrentUserApi,
+  logoutApi,
+} from "../apis/authApi";
 
-async function authRequest(endpoint, options = {}) {
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    ...options,
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
-  });
-
-  const data = await response.json().catch(() => ({}));
-
-  if (!response.ok) {
-    throw new Error(data.message || data.error || "Request failed.");
-  }
-
-  return data;
-}
-
-export function loginUser({ email, password }) {
-  return authRequest("/login", {
-    method: "POST",
-    body: JSON.stringify({ email, password }),
-  });
+export function loginUser(credentials) {
+  return loginApi(credentials);
 }
 
 export function signupUser({ fullName, email, password }) {
   return authRequest("/signup " );
-}
 
-export function completeOnboarding({
-  fullName,
-  bio,
-  skillYouHave,
-  skillYouWant,
-}) {
-  return authRequest("/onboarding", {
-    method: "POST",
-    body: JSON.stringify({
-      fullName,
-      bio,
-      skillYouHave,
-      skillYouWant,
-    }),
-  });
+export function completeOnboarding(profileData) {
+  return completeOnboardingApi(profileData);
 }
 
 export function getCurrentUser() {
-  return authRequest("/me");
+  return getCurrentUserApi();
 }
 
 export function logoutUser() {
-  return authRequest("/logout", {
-    method: "POST",
-  });
+  return logoutApi();
 }

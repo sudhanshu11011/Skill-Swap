@@ -1,21 +1,34 @@
 import { useEffect, useState } from "react";
-
 import {
   BrowserRouter,
   Navigate,
   Route,
   Routes,
+  useLocation,
 } from "react-router-dom";
 
 import Header from "../components/Header.jsx";
 import LandingPage from "../pages/LandingPage.jsx";
 import LoginPage from "../pages/LoginPage.jsx";
 import SignUpPage from "../pages/SignUpPage.jsx";
+import OnboardingPage from "../pages/OnboardingPage.jsx";
+import DashboardPage from "../pages/DashboardPage.jsx";
+import ProtectedRoute from "../routes/ProtectedRoute.jsx";
 
 function AppLayout() {
+  const location = useLocation();
+
   const [dark, setDark] = useState(() => {
     return localStorage.getItem("skillswap-theme") === "dark";
   });
+
+  const landingPageRoutes = ["/", "/about", "/features", "/howitworks"];
+  const showHeader = landingPageRoutes.includes(location.pathname);
+
+  const toggleTheme = () => {
+    setDark((current) => !current);
+  };
+
   useEffect(() => {
     localStorage.setItem("skillswap-theme", dark ? "dark" : "light");
   }, [dark]);
@@ -68,18 +81,13 @@ function AppLayout() {
           'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
       }}
     >
-      <Header
-        dark={dark}
-        onToggleTheme={() => {
-          setDark((current) => !current);
-        }}
-      />
+      {showHeader && <Header dark={dark} onToggleTheme={toggleTheme} />}
 
       <div
         style={{
           flex: "1 1 auto",
           minHeight: 0,
-          overflow: "hidden",
+          overflow: "auto",
         }}
       >
         <Routes>
@@ -105,12 +113,30 @@ function AppLayout() {
 
           <Route
             path="/login"
-            element={<LoginPage dark={dark} />}
+            element={<LoginPage dark={dark} onToggleTheme={toggleTheme} />}
           />
 
           <Route
             path="/signup"
-            element={<SignUpPage dark={dark} />}
+            element={<SignUpPage dark={dark} onToggleTheme={toggleTheme} />}
+          />
+
+          <Route
+            path="/onboarding"
+            element={
+              <ProtectedRoute requireOnboarding>
+                <OnboardingPage dark={dark} />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <DashboardPage dark={dark} />
+              </ProtectedRoute>
+            }
           />
 
           <Route path="*" element={<Navigate to="/" replace />} />
