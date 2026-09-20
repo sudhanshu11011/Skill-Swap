@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ArrowRightLeft, BookOpen, Check, Users } from "lucide-react";
+import useResponsive from "../../hooks/useResponsive";
 
 const skills = [
   {
@@ -24,7 +25,9 @@ function SkillCard({ data }) {
   return (
     <div style={s.card}>
       <div style={s.cardHead}>
-        <div style={s.icon}><Icon size={20} /></div>
+        <div style={s.icon}>
+          <Icon size={20} />
+        </div>
         <span>{title}</span>
       </div>
 
@@ -45,35 +48,66 @@ function SkillCard({ data }) {
 
 export default function About() {
   const [reversed, setReversed] = useState(false);
+  const { isMobile, isSmallMobile } = useResponsive();
 
   const left = reversed ? skills[1] : skills[0];
   const right = reversed ? skills[0] : skills[1];
 
   return (
-    <section id="about" style={s.section}>
-      <div style={s.intro}>
+    <section
+      id="about"
+      style={{
+        ...s.section,
+        padding: isSmallMobile
+          ? "70px 18px"
+          : isMobile
+            ? "80px 28px"
+            : "105px 6%",
+      }}
+    >
+      <div
+        style={{
+          ...s.intro,
+          marginBottom: isMobile ? 42 : 58,
+        }}
+      >
         <span style={s.label}>ABOUT SKILLSWAP</span>
 
-        <h2 style={s.heading}>
+        <h2
+          style={{
+            ...s.heading,
+            fontSize: isSmallMobile ? 31 : isMobile ? 38 : 48,
+          }}
+        >
           Turn What You Know Into
           <br />
           <span>What Someone Needs.</span>
         </h2>
 
         <p style={s.description}>
-          SkillSwap connects people who want to teach and learn from each
-          other. Everyone brings something valuable to the community.
+          SkillSwap creates a simple way for people to exchange knowledge,
+          discover new abilities, and grow together.
         </p>
       </div>
 
-      <div style={s.exchange}>
+      <div
+        style={{
+          ...s.exchange,
+          flexDirection: isMobile ? "column" : "row",
+          gap: isMobile ? 18 : 25,
+        }}
+      >
         <SkillCard data={left} />
 
         <button
           type="button"
           onClick={() => setReversed(!reversed)}
-          style={s.swap}
+          style={{
+            ...s.swap,
+            transform: isMobile ? "rotate(90deg)" : "none",
+          }}
           title="Exchange skills"
+          aria-label="Exchange skills"
         >
           <ArrowRightLeft size={21} />
         </button>
@@ -81,7 +115,14 @@ export default function About() {
         <SkillCard data={right} />
       </div>
 
-      <div style={s.points}>
+      <div
+        style={{
+          ...s.points,
+          gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+          gap: isMobile ? 18 : 30,
+          marginTop: isMobile ? 42 : 58,
+        }}
+      >
         {[
           ["Learn", "Discover practical knowledge from real people."],
           ["Teach", "Share your expertise and help someone grow."],
@@ -99,63 +140,67 @@ export default function About() {
 
 const s = {
   section: {
-    padding: "100px 8%",
-    background: "#f8f9ff",
-    color: "#101a31",
-    fontFamily: "Arial,sans-serif",
+    background: "var(--page-bg)",
+    color: "var(--text)",
+    fontFamily:
+      "Inter, Segoe UI, system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+    boxSizing: "border-box",
   },
 
   intro: {
-    maxWidth: 700,
-    margin: "0 auto 55px",
-    textAlign: "center",
+    maxWidth: 760,
+    margin: "0",
+    textAlign: "left",
   },
 
   label: {
-    color: "#5b20e5",
+    display: "inline-block",
+    color: "var(--primary)",
     fontSize: 13,
     fontWeight: 700,
     letterSpacing: 1.5,
   },
 
   heading: {
-    fontSize: 44,
-    lineHeight: 1.15,
-    margin: "16px 0",
+    margin: "16px 0 18px",
+    color: "var(--text)",
+    lineHeight: 1.1,
+    fontWeight: 800,
+    letterSpacing: "-1.8px",
   },
 
   description: {
     maxWidth: 620,
-    margin: "0 auto",
-    color: "#657493",
+    margin: 0,
+    color: "var(--muted)",
     fontSize: 16,
     lineHeight: 1.7,
   },
 
   exchange: {
-    maxWidth: 980,
-    margin: "0 auto",
+    maxWidth: 1050,
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
-    gap: 25,
+    justifyContent: "flex-start",
   },
 
   card: {
-    flex: 1,
+    width: "100%",
     minHeight: 190,
     padding: 28,
-    border: "1px solid #e6e3f2",
+    boxSizing: "border-box",
+    border: "1px solid var(--border)",
     borderRadius: 18,
-    background: "#fff",
-    boxShadow: "0 15px 35px #4b20a010",
+    background: "var(--surface)",
+    boxShadow: "0 15px 35px rgba(70,40,130,.08)",
+    transition: "transform .25s ease, border-color .25s ease",
   },
 
   cardHead: {
     display: "flex",
     alignItems: "center",
     gap: 12,
-    color: "#68758c",
+    color: "var(--muted)",
     fontSize: 13,
     fontWeight: 600,
   },
@@ -166,22 +211,25 @@ const s = {
     borderRadius: 12,
     display: "grid",
     placeItems: "center",
-    background: "#f0eaff",
-    color: "#5b20e5",
+    background: "var(--soft)",
+    color: "var(--primary)",
   },
 
   skill: {
     margin: "22px 0 7px",
+    color: "var(--text)",
     fontSize: 23,
   },
 
   tools: {
     margin: 0,
-    color: "#68758c",
+    color: "var(--muted)",
+    overflowWrap: "anywhere",
   },
 
   tags: {
     display: "flex",
+    flexWrap: "wrap",
     gap: 9,
     marginTop: 22,
   },
@@ -192,8 +240,8 @@ const s = {
     gap: 5,
     padding: "6px 9px",
     borderRadius: 8,
-    background: "#f7f6fb",
-    color: "#68758c",
+    background: "var(--soft)",
+    color: "var(--muted)",
     fontSize: 11,
   },
 
@@ -208,26 +256,19 @@ const s = {
     background: "linear-gradient(135deg,#5b20e5,#7627e8)",
     color: "#fff",
     cursor: "pointer",
-    boxShadow: "0 8px 20px #5b20e540",
+    boxShadow: "0 8px 20px rgba(91,32,229,.25)",
+    transition: "transform .25s ease, box-shadow .25s ease",
   },
 
   points: {
-    maxWidth: 980,
-    margin: "55px auto 0",
-    paddingTop: 30,
-    borderTop: "1px solid #e5e5ec",
+    maxWidth: 1050,
+    paddingTop: 32,
+    borderTop: "1px solid var(--border)",
     display: "grid",
-    gridTemplateColumns: "repeat(3,1fr)",
-    gap: 30,
   },
 
   point: {
     padding: "0 10px",
-  },
-
-  pointText: {
-    color: "#68758c",
-    fontSize: 13,
-    lineHeight: 1.5,
+    color: "var(--text)",
   },
 };

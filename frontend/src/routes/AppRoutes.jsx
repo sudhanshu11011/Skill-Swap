@@ -1,7 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LandingPage from "../pages/landing/Landing/Landing";
-import Login from "../pages/auth/Login/Login";
-import Register from "../pages/auth/Register/Register";
+import AuthLayout from "../layouts/AuthLayout";
 import Onboarding from "../pages/onboarding/Onboarding/Onboarding";
 import Dashboard from "../pages/user/Dashboard/Dashboard";
 import MainLayout from "../layouts/MainLayout";
@@ -20,8 +19,10 @@ export default function AppRoutes() {
         <Route path="/" element={<LandingPage />} />
 
         <Route element={<PublicRoute />}>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route element={<AuthLayout />}>
+            <Route path="/login" element={null} />
+            <Route path="/register" element={null} />
+          </Route>
         </Route>
 
         <Route element={<OnboardingRoute />}>
