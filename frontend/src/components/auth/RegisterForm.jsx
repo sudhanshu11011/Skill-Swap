@@ -1,21 +1,29 @@
+import { Eye, EyeOff, Mail } from "lucide-react";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../context/AuthContext";
-
-const features = [
-  ["+", "Learn Anything", "Discover new skills from amazing people."],
-  ["+", "Teach & Earn Respect", "Share your knowledge and help others grow."],
-  ["+", "Build Connections", "Connect, collaborate and grow together."],
-];
+import useResponsive from "../../hooks/useResponsive";
 
 export default function RegisterForm() {
   const { signup } = useAuthContext();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ fullName: "", email: "", password: "", confirm: "" });
+  const { isSmallMobile } = useResponsive();
+
+  const [form, setForm] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+    confirm: "",
+  });
+
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
 
-  const change = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const change = (e) =>
+    setForm((current) => ({
+      ...current,
+      [e.target.name]: e.target.value,
+    }));
 
   const submit = async (e) => {
     e.preventDefault();
@@ -32,112 +40,330 @@ export default function RegisterForm() {
         email: form.email,
         password: form.password,
       });
-      if (data?.success) navigate("/onboarding");
+
+      if (data?.success) {
+        navigate("/onboarding", { replace: true });
+      }
     } catch (err) {
-      setError(err.response?.data?.message || "Unable to create account.");
+      setError(
+        err.response?.data?.message || "Unable to create account."
+      );
     }
   };
 
-  const input = (name, type, placeholder) => (
-    <input
-      name={name}
-      type={type}
-      placeholder={placeholder}
-      value={form[name]}
-      onChange={change}
-      required
-      style={s.input}
-    />
-  );
-
   return (
-    <div style={s.page}>
-      <section style={s.left}>
-        <img src="/skillswaplogo.png" alt="SkillSwap" style={s.logo} />
-        <div style={s.leftContent}>
-          <h1 style={s.heading}>Exchange Skills.<br />Build Opportunities.</h1>
-          <p style={s.text}>SkillSwap connects learners and teachers around the world to share knowledge, grow together, and achieve more.</p>
+    <div
+      style={{
+        ...s.wrapper,
+        padding: isSmallMobile ? 20 : 30,
+      }}
+    >
+      <div style={s.header}>
+        <div>
+          <span style={s.eyebrow}>GET STARTED</span>
 
-          {features.map(([icon, title, text]) => (
-            <div style={s.feature} key={title}>
-              <b style={s.icon}>{icon}</b>
-              <div><b>{title}</b><p style={s.small}>{text}</p></div>
-            </div>
-          ))}
+          <h1 style={s.title}>Create Account</h1>
 
-          <img src="/heroimage.png" alt="" style={s.hero} />
+          <p style={s.subtitle}>
+            Join SkillSwap and start exchanging skills.
+          </p>
         </div>
-      </section>
 
-      <section style={s.right}>
-        <div style={s.top}>English <button style={s.theme}>◐</button></div>
+        <img
+          src="/skillswaplogo.png"
+          alt="SkillSwap"
+          style={s.logo}
+        />
+      </div>
 
-        <main style={s.form}>
-          <h2 style={s.title}>Create Account</h2>
-          <p style={s.text}>Join SkillSwap and start exchanging skills.</p>
+      <form onSubmit={submit}>
+        <label style={s.label}>Full Name</label>
 
-          <form onSubmit={submit}>
-            <label>Full Name</label>
-            {input("fullName", "text", "Enter your full name")}
+        <input
+          name="fullName"
+          type="text"
+          placeholder="Enter your full name"
+          value={form.fullName}
+          onChange={change}
+          autoComplete="name"
+          required
+          style={s.input}
+        />
 
-            <label>Email Address</label>
-            {input("email", "email", "Enter your email")}
+        <label style={s.label}>Email Address</label>
 
-            <label>Password</label>
-            <div style={s.password}>
-              {input("password", show ? "text" : "password", "Create a password")}
-              <button type="button" onClick={() => setShow(!show)} style={s.show}>
-                {show ? "Hide" : "Show"}
-              </button>
-            </div>
+        <input
+          name="email"
+          type="email"
+          placeholder="Enter your email"
+          value={form.email}
+          onChange={change}
+          autoComplete="email"
+          required
+          style={s.input}
+        />
 
-            <label>Confirm Password</label>
-            {input("confirm", show ? "text" : "password", "Confirm your password")}
+        <label style={s.label}>Password</label>
 
-            {error && <p style={s.error}>{error}</p>}
+        <div style={s.password}>
+          <input
+            name="password"
+            type={show ? "text" : "password"}
+            placeholder="Create a password"
+            value={form.password}
+            onChange={change}
+            autoComplete="new-password"
+            required
+            style={s.input}
+          />
 
-            <button disabled={signup.isPending} style={s.submit}>
-              {signup.isPending ? "Creating Account..." : "Create Account →"}
-            </button>
-          </form>
+          <button
+            type="button"
+            onClick={() => setShow((current) => !current)}
+            aria-label={show ? "Hide password" : "Show password"}
+            style={s.show}
+          >
+            {show ? <EyeOff size={17} /> : <Eye size={17} />}
+          </button>
+        </div>
 
-          <p style={s.or}>or continue with</p>
-          <button style={s.social}>Google&nbsp;&nbsp; Continue with Google</button>
-          <button style={s.social}>GitHub&nbsp;&nbsp; Continue with GitHub</button>
+        <label style={s.label}>Confirm Password</label>
 
-          <p style={s.login}>Already have an account? <Link to="/login" style={s.link}>Login</Link></p>
-        </main>
+        <input
+          name="confirm"
+          type={show ? "text" : "password"}
+          placeholder="Confirm your password"
+          value={form.confirm}
+          onChange={change}
+          autoComplete="new-password"
+          required
+          style={s.input}
+        />
 
-        <footer style={s.footer}>Your data is secure and encrypted</footer>
-      </section>
+        {(error || signup.isError) && (
+          <p style={s.error}>
+            {error ||
+              signup.error?.response?.data?.message ||
+              "Unable to create account."}
+          </p>
+        )}
+
+        <button
+          type="submit"
+          disabled={signup.isPending}
+          style={{
+            ...s.submit,
+            opacity: signup.isPending ? 0.7 : 1,
+          }}
+        >
+          {signup.isPending ? "Creating Account..." : "Create Account"}
+          <span>→</span>
+        </button>
+      </form>
+
+      <div style={s.divider}>
+        <span style={s.line} />
+        <small>or continue with</small>
+        <span style={s.line} />
+      </div>
+
+      <div style={s.socials}>
+        <button type="button" style={s.social}>
+          <Mail size={17} />
+          Google
+        </button>
+
+        <button type="button" style={s.social}>
+          GitHub
+        </button>
+      </div>
+
+      <p style={s.login}>
+        Already have an account?{" "}
+        <button
+          type="button"
+          onClick={() => navigate("/login", { replace: true })}
+          style={s.linkButton}
+        >
+          Login
+        </button>
+      </p>
+
+      <p style={s.security}>
+        Your data is secure and encrypted
+      </p>
     </div>
   );
 }
 
 const s = {
-  page: { minHeight: "100vh", display: "grid", gridTemplateColumns: "50% 50%", fontFamily: "Arial,sans-serif", color: "#071d49" },
-  left: { background: "#f0ebff", padding: "40px 10%", overflow: "hidden" },
-  logo: { width: 105, height: 105, objectFit: "contain" },
-  leftContent: { maxWidth: 600, margin: "65px auto 0" },
-  heading: { fontSize: 36, lineHeight: 1.15, marginBottom: 24 },
-  text: { color: "#49628b", lineHeight: 1.6 },
-  feature: { display: "flex", gap: 16, alignItems: "center", margin: "22px 0" },
-  icon: { width: 46, height: 46, borderRadius: 12, background: "#fff", display: "grid", placeItems: "center", color: "#5b20e5", boxShadow: "0 4px 12px #0001" },
-  small: { margin: "4px 0", color: "#49628b" },
-  hero: { width: "100%", maxWidth: 430, display: "block", margin: "30px auto 0" },
-  right: { minHeight: "100vh", display: "flex", flexDirection: "column", background: "#fff" },
-  top: { display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 18, padding: "30px 7%" },
-  theme: { width: 42, height: 42, borderRadius: "50%", border: "1px solid #ddd", background: "#fff", color: "#5b20e5" },
-  form: { width: "70%", maxWidth: 500, margin: "35px auto" },
-  title: { fontSize: 32, marginBottom: 8 },
-  input: { width: "100%", boxSizing: "border-box", padding: 14, border: "1px solid #d8dce5", borderRadius: 7, margin: "8px 0 16px", outline: "none" },
-  password: { display: "flex", border: "1px solid #d8dce5", borderRadius: 7, margin: "8px 0 16px" },
-  show: { border: 0, background: "#fff", padding: "0 14px", color: "#68758c" },
-  submit: { width: "100%", border: 0, borderRadius: 7, padding: 15, marginTop: 8, background: "linear-gradient(90deg,#5420df,#7627e8)", color: "#fff", fontWeight: 600 },
-  error: { color: "#c62828", fontSize: 14 },
-  or: { textAlign: "center", color: "#68758c", margin: "26px 0 18px" },
-  social: { width: "100%", padding: 13, background: "#fff", border: "1px solid #d8dce5", borderRadius: 7, marginBottom: 12 },
-  login: { textAlign: "center", marginTop: 28, color: "#53627e" },
-  link: { color: "#5b20e5", textDecoration: "none" },
-  footer: { marginTop: "auto", padding: 20, textAlign: "center", background: "#fafaff", color: "#68758c", fontSize: 13 },
+  wrapper: {
+    width: "100%",
+    height: "100%",
+    boxSizing: "border-box",
+    overflow: "hidden",
+    background: "var(--surface)",
+    color: "var(--text)",
+    fontFamily:
+      "Inter, Segoe UI, system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+  },
+
+  header: {
+    display: "flex",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    gap: 16,
+    marginBottom: 12,
+  },
+
+  eyebrow: {
+    display: "block",
+    marginBottom: 5,
+    color: "var(--primary)",
+    fontSize: 10,
+    fontWeight: 700,
+    letterSpacing: 1.4,
+  },
+
+  title: {
+    margin: 0,
+    fontSize: 28,
+    lineHeight: 1.1,
+  },
+
+  subtitle: {
+    margin: "6px 0 0",
+    color: "var(--muted)",
+    fontSize: 13,
+    lineHeight: 1.4,
+  },
+
+  logo: {
+    width: 48,
+    height: 48,
+    objectFit: "contain",
+    flexShrink: 0,
+  },
+
+  label: {
+    display: "block",
+    margin: "7px 0 4px",
+    color: "var(--text)",
+    fontSize: 12,
+    fontWeight: 600,
+  },
+
+  input: {
+    width: "100%",
+    height: 42,
+    boxSizing: "border-box",
+    padding: "0 13px",
+    border: "1px solid var(--border)",
+    borderRadius: 9,
+    outline: "none",
+    background: "var(--bg)",
+    color: "var(--text)",
+    fontSize: 13,
+  },
+
+  password: {
+    position: "relative",
+  },
+
+  show: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    width: 42,
+    height: 42,
+    display: "grid",
+    placeItems: "center",
+    border: 0,
+    background: "transparent",
+    color: "var(--muted)",
+    cursor: "pointer",
+  },
+
+  error: {
+    margin: "7px 0",
+    color: "#ef5350",
+    fontSize: 12,
+  },
+
+  submit: {
+    width: "100%",
+    height: 44,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 9,
+    marginTop: 11,
+    border: 0,
+    borderRadius: 10,
+    background: "linear-gradient(135deg,#5b20e5,#7627e8)",
+    color: "#fff",
+    fontSize: 13,
+    fontWeight: 700,
+    cursor: "pointer",
+    boxShadow: "0 8px 18px rgba(91,32,229,.20)",
+  },
+
+  divider: {
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
+    margin: "12px 0 9px",
+    color: "var(--muted)",
+    fontSize: 11,
+  },
+
+  line: {
+    flex: 1,
+    height: 1,
+    background: "var(--border)",
+  },
+
+  socials: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: 8,
+  },
+
+  social: {
+    height: 38,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 7,
+    border: "1px solid var(--border)",
+    borderRadius: 9,
+    background: "var(--surface)",
+    color: "var(--text)",
+    fontSize: 12,
+    fontWeight: 600,
+    cursor: "pointer",
+  },
+
+  login: {
+    margin: "11px 0 0",
+    textAlign: "center",
+    color: "var(--muted)",
+    fontSize: 12,
+  },
+
+  linkButton: {
+    border: 0,
+    padding: 0,
+    background: "transparent",
+    color: "var(--primary)",
+    cursor: "pointer",
+    fontWeight: 600,
+  },
+
+  security: {
+    margin: "8px 0 0",
+    textAlign: "center",
+    color: "var(--muted)",
+    fontSize: 10,
+  },
 };

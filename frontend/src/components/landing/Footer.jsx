@@ -1,5 +1,6 @@
 import { ArrowUp, Mail, MessageCircle, Share2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import useResponsive from "../../hooks/useResponsive";
 
 const groups = [
   ["Product", [["Features", "#features"], ["How It Works", "#how-it-works"]]],
@@ -8,9 +9,30 @@ const groups = [
 ];
 
 export default function Footer() {
+  const { isMobile, isSmallMobile } = useResponsive();
+
   return (
-    <footer style={s.footer}>
-      <div style={s.content}>
+    <footer
+      style={{
+        ...s.footer,
+        padding: isSmallMobile
+          ? "60px 18px 22px"
+          : isMobile
+            ? "70px 28px 24px"
+            : "85px 6% 26px",
+      }}
+    >
+      <div
+        style={{
+          ...s.content,
+          gridTemplateColumns: isSmallMobile
+            ? "1fr"
+            : isMobile
+              ? "1fr 1fr"
+              : "2fr repeat(3,1fr)",
+          gap: isMobile ? 38 : 60,
+        }}
+      >
         <div style={s.brand}>
           <Link to="/" style={s.logo}>
             <img src="/skillswaplogo.png" alt="SkillSwap" style={s.logoImg} />
@@ -26,9 +48,15 @@ export default function Footer() {
             <a href="#" aria-label="Community" style={s.social}>
               <Share2 size={17} />
             </a>
-            <a href="mailto:contact@skillswap.com" aria-label="Email" style={s.social}>
+
+            <a
+              href="mailto:contact@skillswap.com"
+              aria-label="Email"
+              style={s.social}
+            >
               <Mail size={17} />
             </a>
+
             <a href="#" aria-label="Messages" style={s.social}>
               <MessageCircle size={17} />
             </a>
@@ -38,6 +66,7 @@ export default function Footer() {
         {groups.map(([title, items]) => (
           <div key={title} style={s.group}>
             <h3 style={s.groupTitle}>{title}</h3>
+
             {items.map(([name, href]) => (
               <a key={name} href={href} style={s.link}>
                 {name}
@@ -47,7 +76,14 @@ export default function Footer() {
         ))}
       </div>
 
-      <div style={s.bottom}>
+      <div
+        style={{
+          ...s.bottom,
+          flexDirection: isMobile ? "column" : "row",
+          alignItems: isMobile ? "flex-start" : "center",
+          marginTop: isMobile ? 45 : 65,
+        }}
+      >
         <span>© {new Date().getFullYear()} SkillSwap. All rights reserved.</span>
 
         <button
@@ -65,18 +101,18 @@ export default function Footer() {
 
 const s = {
   footer: {
-    background: "#10162b",
-    color: "#fff",
-    padding: "65px 8% 24px",
-    fontFamily: "Arial, sans-serif",
+    width: "100%",
+    background: "var(--page-bg)",
+    color: "var(--text)",
+    fontFamily:
+      "Inter, Segoe UI, system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+    boxSizing: "border-box",
   },
 
   content: {
-    maxWidth: 1150,
-    margin: "0 auto",
+    width: "100%",
     display: "grid",
-    gridTemplateColumns: "2fr repeat(3, 1fr)",
-    gap: 60,
+    boxSizing: "border-box",
   },
 
   brand: {
@@ -87,10 +123,10 @@ const s = {
     display: "inline-flex",
     alignItems: "center",
     gap: 10,
-    color: "#fff",
+    color: "var(--text)",
     textDecoration: "none",
     fontSize: 21,
-    fontWeight: 700,
+    fontWeight: 750,
   },
 
   logoImg: {
@@ -100,10 +136,11 @@ const s = {
   },
 
   description: {
-    color: "#aeb6cb",
+    maxWidth: 340,
+    margin: "18px 0",
+    color: "var(--muted)",
     fontSize: 14,
     lineHeight: 1.7,
-    margin: "18px 0",
   },
 
   socials: {
@@ -112,14 +149,17 @@ const s = {
   },
 
   social: {
-    width: 38,
-    height: 38,
+    width: 40,
+    height: 40,
     display: "grid",
     placeItems: "center",
-    color: "#fff",
-    border: "1px solid #30384f",
-    borderRadius: 10,
+    border: 0,
+    borderRadius: 11,
+    background: "var(--surface)",
+    color: "var(--muted)",
     textDecoration: "none",
+    boxShadow: "0 7px 20px rgba(40,25,80,.07)",
+    transition: "transform .2s ease, color .2s ease, box-shadow .2s ease",
   },
 
   group: {
@@ -130,26 +170,29 @@ const s = {
 
   groupTitle: {
     margin: 0,
-    fontSize: 15,
+    color: "var(--text)",
+    fontSize: 14,
+    fontWeight: 700,
   },
 
   link: {
-    color: "#aeb6cb",
+    width: "fit-content",
+    color: "var(--muted)",
     textDecoration: "none",
     fontSize: 14,
+    transition: "color .2s ease, transform .2s ease",
   },
 
   bottom: {
-    maxWidth: 1150,
-    margin: "55px auto 0",
+    width: "100%",
     paddingTop: 22,
-    borderTop: "1px solid #30384f",
+    borderTop: "1px solid var(--border)",
     display: "flex",
     justifyContent: "space-between",
-    alignItems: "center",
     gap: 20,
-    color: "#8993aa",
+    color: "var(--muted)",
     fontSize: 13,
+    boxSizing: "border-box",
   },
 
   backTop: {
@@ -158,8 +201,9 @@ const s = {
     gap: 7,
     border: 0,
     background: "transparent",
-    color: "#fff",
+    color: "var(--text)",
     cursor: "pointer",
     padding: 0,
+    fontWeight: 600,
   },
 };

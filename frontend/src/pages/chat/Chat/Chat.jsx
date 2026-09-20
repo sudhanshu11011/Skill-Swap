@@ -1,13 +1,21 @@
 import { useEffect, useState } from "react";
-import { Channel, Chat, MessageInput, MessageList, Window } from "stream-chat-react";
-import "stream-chat-react/dist/css/v2/index.css";
+import {
+  Channel,
+  Chat,
+  MessageComposer,
+  MessageList,
+  Window,
+} from "stream-chat-react";
+import "stream-chat-react/dist/css/index.css";
 import { useAuthContext } from "../../../context/AuthContext";
 import useChat from "../../../hooks/useChat";
+import useResponsive from "../../../hooks/useResponsive";
 import streamClient from "../../../lib/stream";
 
 export default function ChatPage() {
   const { userQuery } = useAuthContext();
   const { data, isLoading, isError } = useChat();
+  const { isMobile, isSmallMobile } = useResponsive();
   const [ready, setReady] = useState(false);
 
   const user = userQuery.data?.data?.user;
@@ -25,6 +33,7 @@ export default function ChatPage() {
         },
         token
       );
+
       setReady(true);
     };
 
@@ -36,29 +45,49 @@ export default function ChatPage() {
     };
   }, [user, token]);
 
-  if (isLoading) return <main style={{ padding: 32 }}>Loading chat...</main>;
+  const stateStyle = {
+    padding: isSmallMobile ? 16 : isMobile ? 20 : 32,
+  };
 
-  if (isError || !token)
+  if (isLoading) {
+    return <main style={stateStyle}>Loading chat...</main>;
+  }
+
+  if (isError || !token) {
     return (
-      <main style={{ padding: 32 }}>
+      <main style={stateStyle}>
         <h2>Chat unavailable</h2>
         <p>Unable to initialize the chat service.</p>
       </main>
     );
+  }
 
-  if (!ready)
-    return <main style={{ padding: 32 }}>Connecting to chat...</main>;
+  if (!ready) {
+    return <main style={stateStyle}>Connecting to chat...</main>;
+  }
 
   return (
-    <main style={{ height: "calc(100vh - 48px)", padding: 24 }}>
-      <Chat client={streamClient} theme="messaging light">
-        <Channel>
-          <Window>
-            <MessageList />
-            <MessageInput />
-          </Window>
-        </Channel>
-      </Chat>
+    <main
+      style={{
+        height: isMobile
+          ? "calc(100vh - 136px)"
+          : "calc(100vh - 72px)",
+        padding: isSmallMobile ? 6 : isMobile ? 8 : 24,
+        boxSizing: "border-box",
+        minWidth: 0,
+        overflow: "hidden",
+      }}
+    >
+      <div style={{ height: "100%", minWidth: 0 }}>
+        <Chat client={streamClient} theme="messaging light">
+          <Channel>
+            <Window>
+              <MessageList />
+              <MessageComposer />
+            </Window>
+          </Channel>
+        </Chat>
+      </div>
     </main>
   );
 }
