@@ -1,10 +1,11 @@
 import { UserPlus } from "lucide-react";
-import useUser from "../../../hooks/useUser";
+import useConnection from "../../../hooks/useConnection";
 import useResponsive from "../../../hooks/useResponsive";
 
 export default function Requests() {
-  const { requests, acceptRequest } = useUser();
+  const { requests, acceptRequest } = useConnection();
   const { isMobile, isSmallMobile } = useResponsive();
+
   const list = requests.data?.data?.incomingRequests || [];
   const padding = isSmallMobile ? 16 : isMobile ? 20 : 32;
 
@@ -127,6 +128,7 @@ export default function Requests() {
                 </div>
 
                 <button
+                  type="button"
                   onClick={() => acceptRequest.mutate(request._id)}
                   disabled={acceptRequest.isPending}
                   style={{
