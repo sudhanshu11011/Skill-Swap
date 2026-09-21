@@ -20,11 +20,9 @@ const userSchema = new mongoose.Schema({
     },
     skillYouHave:{
         type:String,
-        required:true,
     },
     skillYouWant:{
         type:String,
-        required:true,
     },
     language:{
         type:String,
@@ -59,10 +57,10 @@ userSchema.pre("save", async function () {
     }
 });
 
-userSchema.method.matchPassword = async function (enterPassword) {
+userSchema.methods.matchPassword = async function (enterPassword) {
     const isPassCorrect = await bcrypt.compare(enterPassword, this.password);
     return isPassCorrect;
-}
+};
 
 const User = new mongoose.model("User",userSchema);
 export default User ;
