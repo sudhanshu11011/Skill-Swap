@@ -1,12 +1,12 @@
 import { Users } from "lucide-react";
-import useUser from "../../../hooks/useUser";
+import useConnection from "../../../hooks/useConnection";
 import useResponsive from "../../../hooks/useResponsive";
 
 export default function Connections() {
-  const { friends } = useUser();
+  const { friends } = useConnection();
   const { isMobile, isSmallMobile } = useResponsive();
-  const list = friends.data?.data || [];
 
+  const list = friends.data?.data || [];
   const padding = isSmallMobile ? 16 : isMobile ? 20 : 32;
 
   return (

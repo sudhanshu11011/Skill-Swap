@@ -1,4 +1,14 @@
-export default function UserCard({ person, onConnect, isPending }) {
+import { Check, Clock, UserPlus } from "lucide-react";
+
+export default function UserCard({
+  person,
+  onConnect,
+  isPending,
+  status = "connect",
+}) {
+  const isConnected = status === "connected";
+  const isRequestPending = status === "pending";
+
   return (
     <div
       style={{
@@ -78,20 +88,45 @@ export default function UserCard({ person, onConnect, isPending }) {
       </div>
 
       <button
+        type="button"
         onClick={onConnect}
-        disabled={isPending}
+        disabled={isPending || isRequestPending || isConnected}
         style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 6,
           border: 0,
-          background: "#6d28d9",
-          color: "#fff",
+          background: isConnected || isRequestPending ? "#f0edf7" : "#6d28d9",
+          color: isConnected || isRequestPending ? "#6d28d9" : "#fff",
           borderRadius: 8,
           padding: "10px 14px",
           minHeight: 40,
-          cursor: isPending ? "not-allowed" : "pointer",
+          cursor:
+            isPending || isRequestPending || isConnected
+              ? "default"
+              : "pointer",
           flexShrink: 0,
         }}
       >
-        {isPending ? "Sending..." : "Connect"}
+        {isPending ? (
+          "Sending..."
+        ) : isConnected ? (
+          <>
+            <Check size={15} />
+            Connected
+          </>
+        ) : isRequestPending ? (
+          <>
+            <Clock size={15} />
+            Pending
+          </>
+        ) : (
+          <>
+            <UserPlus size={15} />
+            Connect
+          </>
+        )}
       </button>
     </div>
   );
