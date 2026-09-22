@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import LandingPage from "../pages/landing/Landing/Landing";
+import LandingPage from "../pages/landing/Landing/Landing.jsx";
 import AuthLayout from "../layouts/AuthLayout";
 import Onboarding from "../pages/onboarding/Onboarding/Onboarding";
 import Dashboard from "../pages/user/Dashboard/Dashboard";
