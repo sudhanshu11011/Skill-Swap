@@ -35,13 +35,11 @@ export default function Dashboard() {
   const users = recommended.data?.data || [];
   const friendList = friends.data?.data || [];
 
-  const incoming =
-    requests.data?.data?.incomingRequests || [];
+  const incoming = requests.data?.data?.incomingRequests || [];
 
   const sent = outgoing.data?.data || [];
 
-  const firstName =
-    user?.fullName?.split(" ")[0] || "there";
+  const firstName = user?.fullName?.split(" ")[0] || "there";
 
   const getStatus = (personId) => {
     if (
