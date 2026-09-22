@@ -2,103 +2,171 @@ import User from "../model/userModel.js";
 import jwt from "jsonwebtoken";
 import { upsertStream } from "../lib/stream.js";
 
+const createToken = (userId) => {
+    if (!process.env.JWT_TOKEN) {
+        throw new Error("JWT_TOKEN is not configured");
+    }
+
+    return jwt.sign(
+        {
+            userId: userId.toString(),
+        },
+        process.env.JWT_TOKEN,
+        {
+            expiresIn: "7d",
+        }
+    );
+};
+
+const setAuthCookie = (res, token) => {
+    res.cookie("jwt", token, {
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+        sameSite: "strict",
+        secure: process.env.NODE_ENV === "production",
+    });
+};
+
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
+
         if (!email || !password) {
-            return res.status(400).json({ message: "All field Required" })
+            return res.status(400).json({
+                success: false,
+                message: "Email and password are required",
+            });
         }
 
-        const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(401).json({ message: "Account Not Found" });
-        }
+        const normalizedEmail = email.trim().toLowerCase();
 
-        const isPassCorrect = await user.matchPassword(password);
-        if (!isPassCorrect) {
-            return res.status(401).json({ message: "Invalid EmailId and Password" });
-        }
-
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_TOKEN, {
-            expiresIn: "7d",
-        })
-
-        res.cookie("jwt", token, {
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-            httpOnly: true,
-            sameSite: "strict",
-            secure: process.env.NODE_ENV === "production",
+        const user = await User.findOne({
+            email: normalizedEmail,
         });
 
-        res.status(200).json({ success: true })
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: "Account not found",
+            });
+        }
 
+        const isPasswordCorrect = await user.matchPassword(password);
 
+        if (!isPasswordCorrect) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid email or password",
+            });
+        }
+
+        const token = createToken(user._id);
+
+        setAuthCookie(res, token);
+
+        const safeUser = await User.findById(user._id).select("-password");
+
+        return res.status(200).json({
+            success: true,
+            user: safeUser,
+        });
     } catch (error) {
-        console.error("error in login controller", error);
-        return res.status(500).json({ message: "Internal server error" });
+        console.error("Error in login controller:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+        });
     }
 };
 
-export const singup = async (req, res) => {
+export const signup = async (req, res) => {
     try {
         const { email, password, fullName } = req.body;
 
         if (!email || !password || !fullName) {
-            return res.status(400).json({ message: "All Field Required" })
-        };
-
-        if (password.length < 6) {
-            return res.status(400).json({ message: "Password Must Be Atleast 6 Character Long" })
-        };
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            return res.status(400).json({ message: "Invalid Email Id" })
-        };
-
-        const existUser = await User.findOne({ email });
-        if (existUser) {
-            return res.status(400).json({ message: "user already exist" })
-        };
-
-        const newUser = await User.create({
-            email,
-            fullName,
-            password,
-        })
-
-        try {
-
-            await upsertStream({
-                id: newUser._id.toString(),
-                name: newUser.fullName
+            return res.status(400).json({
+                success: false,
+                message: "Full name, email and password are required",
             });
-
-        } catch (error) {
-            console.error("error in creating stream user", error);
         }
 
+        const trimmedFullName = fullName.trim();
+        const normalizedEmail = email.trim().toLowerCase();
 
-        const token = jwt.sign({ userId: newUser._id }, process.env.JWT_TOKEN, {
-            expiresIn: "7d",
-        })
+        if (!trimmedFullName) {
+            return res.status(400).json({
+                success: false,
+                message: "Full name cannot be empty",
+            });
+        }
 
-        res.cookie("jwt", token, {
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-            httpOnly: true,
-            sameSite: "strict",
-            secure: process.env.NODE_ENV === "production"
-        })
+        if (password.length < 6) {
+            return res.status(400).json({
+                success: false,
+                message: "Password must be at least 6 characters long",
+            });
+        }
 
-        res.status(201).json({
-            success: true,
-            user: newUser
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailRegex.test(normalizedEmail)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid email address",
+            });
+        }
+
+        const existingUser = await User.findOne({
+            email: normalizedEmail,
         });
 
+        if (existingUser) {
+            return res.status(409).json({
+                success: false,
+                message: "User already exists",
+            });
+        }
+
+        const newUser = await User.create({
+            email: normalizedEmail,
+            fullName: trimmedFullName,
+            password,
+        });
+
+        try {
+            await upsertStream({
+                id: newUser._id.toString(),
+                name: newUser.fullName,
+            });
+        } catch (streamError) {
+            console.error(
+                "Error creating Stream user:",
+                streamError
+            );
+        }
+
+        const token = createToken(newUser._id);
+
+        setAuthCookie(res, token);
+
+        const safeUser = await User.findById(newUser._id).select(
+            "-password"
+        );
+
+        return res.status(201).json({
+            success: true,
+            user: safeUser,
+        });
     } catch (error) {
-        console.error("error in signup logic", error)
-        return res.status(500).json({message:"internal server error"})
-    }};
+        console.error("Error in signup controller:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+        });
+    }
+};
 
 export const logout = async (req, res) => {
     try {
@@ -107,43 +175,90 @@ export const logout = async (req, res) => {
             sameSite: "strict",
             secure: process.env.NODE_ENV === "production",
         });
-        res.status(200).json({ success: true, message: "Logout Successfully" });
+
+        return res.status(200).json({
+            success: true,
+            message: "Logout successfully",
+        });
     } catch (error) {
-        console.error("error in logout", error);
-        return res.status(500).json({ message: "internal server error" });
+        console.error("Error in logout:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+        });
     }
 };
 
-export const onBoarding = async (req, res) => {
+export const onboarding = async (req, res) => {
     try {
         const userId = req.user._id;
 
-        const { fullName, bio, skillYouHave, skillYouWant } = req.body;
+        const {
+            fullName,
+            bio,
+            skillYouHave,
+            skillYouWant,
+            language,
+            profilePic,
+        } = req.body;
+
         if (!fullName || !skillYouHave || !skillYouWant) {
-            return res.status(400).json({ message: "All Field Required" })
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Full name, skill you have and skill you want are required",
+            });
+        }
+
+        const updateData = {
+            fullName: fullName.trim(),
+            bio: bio?.trim() || "",
+            skillYouHave: skillYouHave.trim(),
+            skillYouWant: skillYouWant.trim(),
+            language: language?.trim() || "",
+            profilePic: profilePic?.trim() || "",
+            isOnboarded: true,
         };
 
-        const updateUser = await User.findByIdAndUpdate(userId, {
-            ...req.body,
-            isOnboarded: true,
-        }, { new: true })
-        if (!updateUser) {
-            return res.status(404).json({ message: "User not found" });
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            updateData,
+            {
+                new: true,
+                runValidators: true,
+            }
+        ).select("-password");
+
+        if (!updatedUser) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
         }
 
         try {
             await upsertStream({
-                id: updateUser._id.toString(),
-                name: updateUser.fullName,
-            })
-        } catch (error) {
-            console.error("error in update user in stream", error);
+                id: updatedUser._id.toString(),
+                name: updatedUser.fullName,
+            });
+        } catch (streamError) {
+            console.error(
+                "Error updating Stream user:",
+                streamError
+            );
         }
 
-        res.status(200).json({ success: true, user: updateUser });
-
+        return res.status(200).json({
+            success: true,
+            user: updatedUser,
+        });
     } catch (error) {
-        console.error("error in onBoarding", error)
-        res.status(500).json({ message: "Internal server Error" })
+        console.error("Error in onboarding:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+        });
     }
 };

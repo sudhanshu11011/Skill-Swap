@@ -2,10 +2,15 @@ import mongoose from "mongoose";
 
 export const connectDB = async () => {
     try {
-        const connect = await mongoose.connect(process.env.MONGO_DB);
-        console.log("dataBase connected")
+        if (!process.env.MONGO_DB) {
+            throw new Error("MONGO_DB is not defined in environment variables");
+        }
+
+        await mongoose.connect(process.env.MONGO_DB);
+
+        console.log("Database connected successfully");
     } catch (error) {
-        console.error("error in connecting database", error);
-        process.exit(1);
+        console.error("Error connecting to database:", error);
+        throw error;
     }
-}
+};
