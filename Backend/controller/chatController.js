@@ -1,13 +1,19 @@
 import { generateToken } from "../lib/stream.js";
 
-
-export const getStreamToken = async (req,res) => {
+export const getStreamToken = async (req, res) => {
     try {
-        const token = generateToken(req.user.id);
-        res.status(200).json({token});
+        const token = generateToken(req.user._id);
 
+        return res.status(200).json({
+            success: true,
+            token,
+        });
     } catch (error) {
-        console.error("error in get stream token", error);
-        res.status(500).json({message:"internal server error"})
+        console.error("Error getting Stream token:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+        });
     }
-}
+};
